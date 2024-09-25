@@ -1,0 +1,32 @@
+{
+    "plugins": [
+        "jsdoc",
+    ],
+    
+    "ignorePatterns": [
+        "public"
+    ],
+    
+    "extends": [
+        "eslint:recommended",
+        // "plugin:jsdoc/recommended-error",
+    ],
+    
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": "latest",
+    },
+    
+    "env": {
+        "node": true,
+        "es6": true,
+    },
+    
+    "rules": {
+        "no-unused-vars": "warn",
+        "no-empty": "warn",
+        // "valid-jsdoc": "error",
+        "no-unreachable": "off",
+        "no-inner-declarations": "off",
+    },
+}
