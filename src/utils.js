@@ -1,9 +1,20 @@
 import fetch from 'node-fetch';
-import config from '../config.cjs';
+import config from '../config.cjs'; // @ts-ignore 
+import { fetchToCurl } from 'fetch-to-curl';
+
+import 'dotenv/config.js';
 
 /**
  * @typedef {import('node-fetch').RequestInit} RequestInit
  */
+
+/** @param {string | undefined} str */
+export function yn(str) {
+    if (!str)
+        return false;
+    
+    return ['y', 'yes', 'true', '1', 'on'].includes(str.toString().toLowerCase());
+}
 
 /** @param {string} link */
 export function apiUrl(link) {
@@ -53,6 +64,9 @@ export async function apiRaw(link, request = {}, opts = {}) {
         }
     }
     
+    if (yn(process.env.FetchToCurl))
+        return fetchToCurl(apiUrl(link), /** @type {import('fetch-to-curl').FetchOptions} */ (request));
+    
     return fetch(apiUrl(link), /** @type {RequestInit} */ (request));
 }
 
@@ -64,6 +78,10 @@ export async function apiRaw(link, request = {}, opts = {}) {
 export function api(link, request = {}, opts = {}) {
     return new Promise(async (resolve, reject) => {
         const answer = await apiRaw(link, request, opts);
+        
+        if (typeof answer == 'string')
+            return resolve([ link, answer ]);
+        
         const headCT = answer.headers.get('content-type');
         
         if (headCT && headCT.includes('application/json')) {

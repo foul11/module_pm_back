@@ -45,13 +45,18 @@ export default function() {
     
     app.put('/', (req, res) => {
         const { warns, input: listObj } = CheckTask.checkForWarn(req.body); res.warns = warns;
-        const lists = new Set(listObj.map(taks => taks.listId)).values();
+        const lists = new Set(listObj.map(taks => taks.listId));
         
         let isFailed = false;
         
-        for (const list of lists) {
+        for (const list of lists.values()) {
             db.prepare(`DELETE FROM task WHERE listId = @listId`).run({ listId: list });
         }
+        
+        // if (lists.has(undefined)) {
+        db.prepare(`DELETE FROM task`).run();
+        db.prepare(`DELETE FROM sqlite_sequence`).run();
+        // }
         
         for (const task of listObj) {
             const row = (db.prepare(`INSERT INTO task (listId, data) VALUES (@listId, @data)`).run({

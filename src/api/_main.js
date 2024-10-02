@@ -14,7 +14,7 @@ export default function() {
         db.prepare(`DELETE FROM task`).run();
         db.prepare(`DELETE FROM sqlite_sequence`).run();
         
-        return res.json({ status: 'success' });
+        return res.json({ status: 'reset' });
     });
     
     return app

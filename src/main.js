@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 
 import api from './api/_main.js';
+import config from '../config.cjs';
 
 app.use(cors());
 app.use(express.json());
@@ -20,6 +21,6 @@ app.use((err, req, res, next) => {
     return next(err);
 });
 
-app.listen(8081, () => {
-    console.log('Listening on port 8081');
+app.listen(config.link.port, () => {
+    console.log(`Listening on port ${config.link.port}`);
 });

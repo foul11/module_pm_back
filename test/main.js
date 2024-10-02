@@ -92,6 +92,9 @@ async function Log(data) {
     try {
         const [ link, res ] = await data;
         
+        if (typeof res == 'string')
+            return console.log(`${`${link}:`.padEnd(20)} ${res}`);
+        
         console.log(`${link}: ${inspect(res)}`);
     } catch (/** @type {ApiResult<string>} */ /** @type {any} */ e) {
         const [ link, error ] = e;
@@ -101,14 +104,14 @@ async function Log(data) {
 
 
 {
-    await resetDB(); // Сбрасываем все данные
+    Log(resetDB());  // Сбрасываем все данные, в ответ получаем status: reset
     
     Log(getTask(1)); // Проверяем задачу номер 1, ее не существует
     
-    Log(newTask({ completed: false, desc: 'Test desc1', title: 'Test' })); // Создаем задачу, она будет 1
-    Log(newTask({ completed: true,  desc: 'Test desc2', title: 'Tets' })); // Создаем задачу, она будет 2
-    Log(newTask({ completed: false, desc: 'Test desc3', title: 'eTts' })); // Создаем задачу, она будет 3
-    Log(newTask({ completed: true,  desc: 'Test desc4', title: 'etTs' })); // Создаем задачу, она будет 4
+    Log(newTask({ complete: false, desc: 'Test desc1', name: 'Test' })); // Создаем задачу, она будет 1
+    Log(newTask({ complete: true,  desc: 'Test desc2', name: 'Tets' })); // Создаем задачу, она будет 2
+    Log(newTask({ complete: false, desc: 'Test desc3', name: 'eTts' })); // Создаем задачу, она будет 3
+    Log(newTask({ complete: true,  desc: 'Test desc4', name: 'etTs' })); // Создаем задачу, она будет 4
     
     Log(getTask(1)); // Проверяем задачу номер 1, она существует
     Log(getTask(2)); // Проверяем задачу номер 2, она существует
@@ -117,13 +120,13 @@ async function Log(data) {
     
     Log(getList());  // Получаем все задачи, должно быть 4 шт
     
-    Log(newTask({ completed: true,  desc: 'Test desc4', title: 'etTs', listId: 1 })); // Создаем задачу, она будет 5, список 1
+    Log(newTask({ complete: true,  desc: 'Test desc4', name: 'etTs', listId: 1 })); // Создаем задачу, она будет 5, список 1
     
     Log(getList());  // Получаем все задачи, должно быть 5 шт
     Log(getList(1)); // Получаем список 1,   должно быть 1 шт
     
     Log(delTask(3)); // Удаляем задачу номер 3, теперь задач 4шт
-    Log(editTask(2, { completed: false,  desc: 'TTTT desc2', title: 'Tets', listId: 1 })); // Изменяем задачу номер 2, добавляем ее в список 1, обновляем описание, убираем выполение
+    Log(editTask(2, { complete: false,  desc: 'TTTT desc2', name: 'Tets', listId: 1 })); // Изменяем задачу номер 2, добавляем ее в список 1, обновляем описание, убираем выполение
     
     Log(getList());  // Получаем все задачи, должно быть 4 шт
     Log(getList(1)); // Получаем список 1,   должно быть 2 шт
@@ -136,15 +139,15 @@ async function Log(data) {
     Log(uploadList([
         {
             listId: 1,
-            completed: false,
+            complete: false,
             desc: '__TASK (1)__',
-            title: 'List 1',
+            name: 'List 1',
         },
         {
             listId: 1,
-            completed: false,
+            complete: false,
             desc: '__TASK (2)__',
-            title: 'List 1',
+            name: 'List 1',
         },
     ])); // Загружаем первый список, 2 предыдущие задачи удалились, создались 2 новые
     
@@ -152,9 +155,9 @@ async function Log(data) {
     
     Log(uploadList([
         {
-            completed: false,
+            complete: false,
             desc: '__KSAT (1)__',
-            title: 'List default',
+            name: 'List default',
         },
     ])); // Задачи без списка, попадают в дефолтный список, НЕ удаляя предыдущие, добавляем 1 задачу
     
